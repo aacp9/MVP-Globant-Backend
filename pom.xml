@@ -121,7 +121,7 @@
 			                    <exclude>cl/aacp9/model/**</exclude>
 			                    <exclude>cl/aacp9/DTO/**</exclude>
 			                    <!-- Excludes specific classes -->
-			                    <exclude>cl/aacp9/McpGlobantApplication*</exclude>
+			                    <exclude>cl/aacp9/MvpGlobantApplication*</exclude>
 			                </excludes>
 			            </configuration>
 		                </execution>
