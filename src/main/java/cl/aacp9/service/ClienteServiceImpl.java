@@ -1,5 +1,6 @@
 package cl.aacp9.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,11 @@ public class ClienteServiceImpl implements IClienteService{
 
 	@Override
 	public Cliente disableClient(Integer id, Cliente clienteActualizado) {
+		try {
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
         Cliente clienteExistente = clienteRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Cliente no encontrado con el ID: " + id));
         clienteExistente.setEstado(clienteActualizado.getEstado());
@@ -28,6 +34,7 @@ public class ClienteServiceImpl implements IClienteService{
 
 	@Override
 	public Boolean existeCliente(Integer id) {
+		
 		return clienteRepository.existsById(id);
 	}
 	
