@@ -1,0 +1,92 @@
+[
+	{
+		"id": 1,
+		"nombre": "Hamlen",
+		"apellido": "Landeaux",
+		"run": "483-11-0636",
+		"direccion": "Apt 1454",
+		"fechaNacimiento": "2024-08-28T04:00:00.000+00:00",
+		"estado": true
+	},
+	{
+		"id": 2,
+		"nombre": "Barbie",
+		"apellido": "Searle",
+		"run": "891-24-0334",
+		"direccion": "Suite 20",
+		"fechaNacimiento": "2024-09-02T04:00:00.000+00:00",
+		"estado": true
+	},
+	{
+		"id": 3,
+		"nombre": "Onofredo",
+		"apellido": "Gertray",
+		"run": "252-79-4434",
+		"direccion": "20th Floor",
+		"fechaNacimiento": "2024-06-19T04:00:00.000+00:00",
+		"estado": true
+	},
+	{
+		"id": 4,
+		"nombre": "Benedicto",
+		"apellido": "Curless",
+		"run": "252-39-9382",
+		"direccion": "Suite 83",
+		"fechaNacimiento": "2024-12-03T03:00:00.000+00:00",
+		"estado": true
+	},
+	{
+		"id": 5,
+		"nombre": "Averell",
+		"apellido": "Jobke",
+		"run": "473-47-1238",
+		"direccion": "PO Box 44677",
+		"fechaNacimiento": "2024-06-26T04:00:00.000+00:00",
+		"estado": true
+	},
+	{
+		"id": 6,
+		"nombre": "Grete",
+		"apellido": "Regitz",
+		"run": "321-53-1757",
+		"direccion": "Suite 5",
+		"fechaNacimiento": "2023-12-30T03:00:00.000+00:00",
+		"estado": true
+	},
+	{
+		"id": 7,
+		"nombre": "Beatrisa",
+		"apellido": "Charter",
+		"run": "419-79-7417",
+		"direccion": "14th Floor",
+		"fechaNacimiento": "2024-07-02T04:00:00.000+00:00",
+		"estado": true
+	},
+	{
+		"id": 8,
+		"nombre": "Illa",
+		"apellido": "Stanley",
+		"run": "185-55-4864",
+		"direccion": "PO Box 73141",
+		"fechaNacimiento": "2024-06-23T04:00:00.000+00:00",
+		"estado": true
+	},
+	{
+		"id": 9,
+		"nombre": "Verla",
+		"apellido": "Rudeforth",
+		"run": "456-87-5765",
+		"direccion": "16th Floor",
+		"fechaNacimiento": "2024-11-01T03:00:00.000+00:00",
+		"estado": true
+	},
+	{
+		"id": 10,
+		"nombre": "Clair",
+		"apellido": "Devericks",
+		"run": "797-52-3963",
+		"direccion": "Apt 615",
+		"fechaNacimiento": "2024-06-23T04:00:00.000+00:00",
+		"estado": true
+	}
+]

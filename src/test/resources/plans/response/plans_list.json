@@ -1,0 +1,44 @@
+[
+	{
+		"id": 1,
+		"nombre": "Plan Basic",
+		"precio": 12990,
+		"servicio": "300 Minutos",
+		"estado": true
+	},
+	{
+		"id": 2,
+		"nombre": "Plan Basic + plus",
+		"precio": 14990,
+		"servicio": "300 minutos + Social ilimitado",
+		"estado": true
+	},
+	{
+		"id": 3,
+		"nombre": "Plan Medio",
+		"precio": 25990,
+		"servicio": "300 minutos + 500 mbps Fibra",
+		"estado": true
+	},
+	{
+		"id": 4,
+		"nombre": "Plan Medio + plus",
+		"precio": 27990,
+		"servicio": "300 minutos + 500 mbps Fibra + Social ilimitado",
+		"estado": true
+	},
+	{
+		"id": 5,
+		"nombre": "Plan Full",
+		"precio": 38990,
+		"servicio": "300 minutos + 500 mbps Fibra + 50 Canales",
+		"estado": true
+	},
+	{
+		"id": 6,
+		"nombre": "Plan Full + plus",
+		"precio": 40990,
+		"servicio": "300 minutos + 500 mbps Fibra + 50 Canales + Social ilimitado",
+		"estado": true
+	}
+]
