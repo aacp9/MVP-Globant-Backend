@@ -24,25 +24,17 @@ public class PlanController {
 	
 	@GetMapping("/planes")
 	public ResponseEntity<List<Plan>> findAll(){
-		try {
 			List<Plan> listaPlanes = planService.findAll();
 			if(!listaPlanes.isEmpty()) {
 				return new ResponseEntity<>(listaPlanes,HttpStatus.OK);
 			}else {
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 			}
-		} catch (Exception e) {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
 	}
 
 	@PutMapping("/disablePlan/{id}")
 	public ResponseEntity<Plan> disablePlan(@PathVariable Integer id, @RequestBody Plan planActualizado){
-		try {
 			Plan plan = planService.disablePlan(id, planActualizado);
 			return new ResponseEntity<>(plan,HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
 	}
 }

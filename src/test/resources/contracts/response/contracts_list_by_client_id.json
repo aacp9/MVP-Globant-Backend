@@ -1,0 +1,44 @@
+[
+	{
+		"id": 1,
+		"estado": true,
+		"descuento": 0,
+		"cliente": {
+			"id": 1,
+			"nombre": "Hamlen",
+			"apellido": "Landeaux",
+			"run": "483-11-0636",
+			"direccion": "Apt 1454",
+			"fechaNacimiento": "2024-08-28T04:00:00.000+00:00",
+			"estado": true
+		},
+		"plan": {
+			"id": 1,
+			"nombre": "Plan Basic",
+			"precio": 12990,
+			"servicio": "300 Minutos",
+			"estado": true
+		}
+	},
+	{
+		"id": 2,
+		"estado": true,
+		"descuento": 5,
+		"cliente": {
+			"id": 1,
+			"nombre": "Hamlen",
+			"apellido": "Landeaux",
+			"run": "483-11-0636",
+			"direccion": "Apt 1454",
+			"fechaNacimiento": "2024-08-28T04:00:00.000+00:00",
+			"estado": true
+		},
+		"plan": {
+			"id": 2,
+			"nombre": "Plan Basic + plus",
+			"precio": 14990,
+			"servicio": "300 minutos + Social ilimitado",
+			"estado": true
+		}
+	}
+]

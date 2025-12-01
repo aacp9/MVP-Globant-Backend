@@ -22,7 +22,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
-import cl.aacp9.model.Cliente;
 import cl.aacp9.model.Plan;
 import cl.aacp9.repository.IPlanRepository;
 import cl.aacp9.util.TestUtil;

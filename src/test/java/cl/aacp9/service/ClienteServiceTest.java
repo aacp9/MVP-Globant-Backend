@@ -63,11 +63,9 @@ class ClienteServiceTest {
 	
 	@Test
 	  void shouldReturnList() {
-		
 		List<Cliente> clientes = 
 				TestUtil.loadObjectFromResource(
 						"clients/response/clients_list.json", new TypeReference<List<Cliente>>() {});
-		
 		when(clienteRepositoryTest.findAll())
 		.thenReturn(clientes);
 		
