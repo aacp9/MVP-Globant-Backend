@@ -30,48 +30,34 @@ public class ContratoController {
 	
 	@GetMapping("/contratosByIdCliente/{id}")
 	public ResponseEntity<List<Contrato>> findAllByCliente(@PathVariable Integer id){
-		try {
-			List<Contrato> listaContratosByIdCliente=contratoService.listaContratoByIdCliente(id);  
-			if(!listaContratosByIdCliente.isEmpty()) {
-					return new ResponseEntity<>(listaContratosByIdCliente,HttpStatus.OK);
-			}else {
-				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-			}
-				
-		} catch (Exception e) {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		List<Contrato> listaContratosByIdCliente=contratoService.listaContratoByIdCliente(id);  
+		if(!listaContratosByIdCliente.isEmpty()) {
+				return new ResponseEntity<>(listaContratosByIdCliente,HttpStatus.OK);
+		}else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
 	
 	@PostMapping("/saveContrato")
 	public ResponseEntity<Contrato> saveContrato(@RequestBody Contrato contrato){
-		try {
-			if(clienteService.existeCliente(contrato.getCliente().getId()) && planService.existePlan(contrato.getPlan().getId())) {
-				if (contratoService.existeClienteConContrato(contrato.getCliente().getId())){
-					//aplicar descuento de 5% al plan elejido
-					contrato.setDescuento(5);
-				}
-				contratoService.save(contrato);
-				return new ResponseEntity<>(HttpStatus.OK);
+		if(clienteService.existeCliente(contrato.getCliente().getId()) && planService.existePlan(contrato.getPlan().getId())) {
+			if (contratoService.existeClienteConContrato(contrato.getCliente().getId())){
+				//aplicar descuento de 5% al plan elejido
+				contrato.setDescuento(5);
 			}
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		} catch (Exception e) {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			contratoService.save(contrato);
+			return new ResponseEntity<>(HttpStatus.OK);
 		}
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 	
 	@GetMapping("/contratos")
 	public ResponseEntity<List<Contrato>> findAll(){
-		try {
-			List<Contrato> listaContratos= contratoService.findAll();
-			if(!listaContratos.isEmpty()) {
-				return new ResponseEntity<>(listaContratos,HttpStatus.OK);
-			}else {
-				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-			}
-			
-		} catch (Exception e) {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		List<Contrato> listaContratos= contratoService.findAll();
+		if(!listaContratos.isEmpty()) {
+			return new ResponseEntity<>(listaContratos,HttpStatus.OK);
+		}else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
 

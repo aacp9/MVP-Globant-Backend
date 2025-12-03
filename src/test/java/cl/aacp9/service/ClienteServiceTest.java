@@ -36,7 +36,7 @@ class ClienteServiceTest {
 	//simula objeto 
 	@Mock 
 	private IClienteRepository clienteRepositoryTest;
-	
+
 	//happyPathTest
 	@Test
 	void ShouldReturnTrue() {
@@ -61,6 +61,15 @@ class ClienteServiceTest {
 		verify(clienteRepositoryTest, times(1)).existsById(anyInt());
 	}
 	
+	//FalsePathTest
+	@Test
+	void shouldReturnThrowInExisteCliente() {
+		when (clienteRepositoryTest.existsById(anyInt())).thenThrow(new RuntimeException("test"));
+		assertThrows(Exception.class, ()->clienteServiceTest.existeCliente(anyInt()));
+		verify(clienteRepositoryTest, times(1)).existsById(anyInt());		
+	}
+	
+
 	@Test
 	  void shouldReturnList() {
 		List<Cliente> clientes = 
@@ -72,6 +81,15 @@ class ClienteServiceTest {
 		//testing method
 		List<Cliente> resultado=clienteServiceTest.findAll();
 		assertThat(resultado).isEqualTo(clientes);
+		verify(clienteRepositoryTest, times(1)).findAll();
+	}
+	
+	//sadPathTest
+	@Test
+	void ShouldReturnThrowInFindAll() {
+		when (clienteRepositoryTest.findAll()).thenThrow(new RuntimeException("test"));
+		//testing method
+		assertThrows(Exception.class, ()->clienteServiceTest.findAll());
 		verify(clienteRepositoryTest, times(1)).findAll();
 	}
 

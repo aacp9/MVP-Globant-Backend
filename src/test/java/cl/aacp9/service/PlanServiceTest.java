@@ -58,6 +58,15 @@ public class PlanServiceTest {
 		verify(planRepositoryTest, times(1)).existsById(anyInt());
 	}
 
+	//FalsePathTest
+	@Test
+	void shouldReturnThrowInExistePlan() {
+		when (planRepositoryTest.existsById(anyInt())).thenThrow(new RuntimeException("test"));
+		assertThrows(Exception.class, ()->planServiceTest.existePlan(anyInt()));
+		verify(planRepositoryTest, times(1)).existsById(anyInt());		
+	}
+	
+	
 	@Test
 	  void shouldReturnList() {
 		
@@ -73,6 +82,16 @@ public class PlanServiceTest {
 		assertThat(resultado).isEqualTo(planes);
 		verify(planRepositoryTest, times(1)).findAll();
 	}
+	
+	//sadPathTest
+	@Test
+	void ShouldReturnThrowInFindAll() {
+		when (planRepositoryTest.findAll()).thenThrow(new RuntimeException("test"));
+		//testing method
+		assertThrows(Exception.class, ()->planServiceTest.findAll());
+		verify(planRepositoryTest, times(1)).findAll();
+	}
+	
 	
 	@Test
 	void shouldReturnClientDisable() throws IOException {
