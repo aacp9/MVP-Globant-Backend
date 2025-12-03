@@ -11,6 +11,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class TestUtil {
 	private static ObjectMapper mapper = new ObjectMapper(); // createObjectMapper();
 
+	  public static String toJson(Object object) {
+		    try {
+		      return mapper.writeValueAsString(object);
+		    } catch (Exception e) {
+		      throw new RuntimeException("Error serializing object to JSON", e);
+		    }
+		  }
+	
 	public static <T> T loadObjectFromResource(String resourcePath, Class<T> valueType)
 		      throws IOException {
 		    try (InputStream inputStream =

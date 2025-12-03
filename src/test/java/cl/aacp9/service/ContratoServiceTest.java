@@ -9,8 +9,6 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withResourceNotFound;
-import static org.mockito.Mockito.doNothing;
 
 import java.io.IOException;
 import java.util.Collections;
