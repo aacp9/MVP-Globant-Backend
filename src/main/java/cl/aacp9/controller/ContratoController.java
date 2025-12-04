@@ -28,6 +28,29 @@ public class ContratoController {
 	@Autowired
 	public IPlanService planService;
 	
+	@GetMapping("/contratos")
+	public ResponseEntity<List<Contrato>> findAll(){
+		List<Contrato> listaContratos= contratoService.findAll();
+		if(!listaContratos.isEmpty()) {
+			return new ResponseEntity<>(listaContratos,HttpStatus.OK);
+		}else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
+
+	@PostMapping("/saveContrato")
+	public ResponseEntity<Contrato> saveContrato(@RequestBody Contrato contrato){
+		if(clienteService.existeCliente(contrato.getCliente().getId()) && planService.existePlan(contrato.getPlan().getId())) {
+			if (contratoService.existeClienteConContrato(contrato.getCliente().getId())){
+				//aplicar descuento de 5% al plan elejido
+				contrato.setDescuento(5);
+			}
+			contratoService.save(contrato);
+			return new ResponseEntity<>(contrato,HttpStatus.CREATED);
+		}
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	}
+	
 	@GetMapping("/contratosByIdCliente/{id}")
 	public ResponseEntity<List<Contrato>> findAllByCliente(@PathVariable Integer id){
 		List<Contrato> listaContratosByIdCliente=contratoService.listaContratoByIdCliente(id);  
@@ -38,28 +61,6 @@ public class ContratoController {
 		}
 	}
 	
-	@PostMapping("/saveContrato")
-	public ResponseEntity<Contrato> saveContrato(@RequestBody Contrato contrato){
-		if(clienteService.existeCliente(contrato.getCliente().getId()) && planService.existePlan(contrato.getPlan().getId())) {
-			if (contratoService.existeClienteConContrato(contrato.getCliente().getId())){
-				//aplicar descuento de 5% al plan elejido
-				contrato.setDescuento(5);
-			}
-			contratoService.save(contrato);
-			return new ResponseEntity<>(HttpStatus.OK);
-		}
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-	}
-	
-	@GetMapping("/contratos")
-	public ResponseEntity<List<Contrato>> findAll(){
-		List<Contrato> listaContratos= contratoService.findAll();
-		if(!listaContratos.isEmpty()) {
-			return new ResponseEntity<>(listaContratos,HttpStatus.OK);
-		}else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
-	}
 
 	
 	

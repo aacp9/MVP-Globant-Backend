@@ -27,14 +27,15 @@ public class ContratoServiceImpl implements IContratoService {
 	}
 	
 	@Override
-	public void save(Contrato contrato) {
+	public Contrato save(Contrato contrato) {
+		Contrato contratoResultado = null;
 		try {
-			contratoRepository.save(contrato);
+			contratoResultado = contratoRepository.save(contrato);
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new ApiException("error al registrar contratos",HttpStatus.BAD_REQUEST);
 		}
-		
+		return contratoResultado;
 	}
 
 	@Override
