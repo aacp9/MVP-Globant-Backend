@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -22,7 +23,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
+import cl.aacp9.exception.ApiException;
+import cl.aacp9.model.Cliente;
 import cl.aacp9.model.Plan;
+import cl.aacp9.repository.IContratoRepository;
 import cl.aacp9.repository.IPlanRepository;
 import cl.aacp9.util.TestUtil;
 
@@ -34,6 +38,10 @@ public class PlanServiceTest {
 	
 	@Mock
 	private IPlanRepository planRepositoryTest;
+	
+	@Mock 
+	private IContratoRepository contratoRepositoryTest;
+
 	
 	//happyPathTest
 	@Test
@@ -123,6 +131,45 @@ public class PlanServiceTest {
 	            planServiceTest.disablePlan(anyInt(), plan);
 	        }, "La excepción 'Cliente no encontrado con el ID: ' debe ser lanzada.");	
     }
+	@Test
+	void shouldRegisterPlan() throws IOException{
+		Plan plan =
+				TestUtil.loadObjectFromResource(
+						"plans/response/plan_entity.json", Plan.class);
+		when(planRepositoryTest.save(any(Plan.class))).thenReturn(plan);
+		
+		//testing method
+		planServiceTest.create(plan);
+		verify(planRepositoryTest, times(1)).save(any(Plan.class));
+	}
 
+	@Test
+	void ShouldReturnThowInSave() throws IOException{
+		Plan plan =
+				TestUtil.loadObjectFromResource(
+						"plans/response/plan_entity.json", Plan.class);
+		when(planRepositoryTest.save(any(Plan.class))).thenThrow(new IllegalArgumentException("test"));
+		
+		//testing method
+		assertThrows(Exception.class, ()->planServiceTest.create(plan));
+		verify(planRepositoryTest, times(1)).save(any(Plan.class));
+	}
+	
+	@Test
+	void ShouldDeletedPlan() {
+		when(contratoRepositoryTest.existByPlanId(anyInt())).thenReturn(true);
+		doNothing().when(contratoRepositoryTest).deleteContratoByIdPlan(anyInt()); //cuando el repositorio no retorna nada
+		doNothing().when(planRepositoryTest).deleteById(anyInt()); //cuando el repositorio no retorna nada
+		
+		planServiceTest.deletePlan(anyInt());
+		verify(planRepositoryTest, times(1)).deleteById(anyInt());
+	}
+
+	@Test
+	void ShouldReturnThrowInDeletedPlan() {
+		when(contratoRepositoryTest.existByPlanId(anyInt())).thenThrow(new RuntimeException("test"));
+		
+		assertThrows(ApiException.class, () -> planServiceTest.deletePlan(1));
+	}
 
 }

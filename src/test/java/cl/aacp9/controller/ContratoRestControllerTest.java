@@ -1,8 +1,10 @@
-package cl.aacp9.repository;
+package cl.aacp9.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -34,7 +36,7 @@ import cl.aacp9.util.TestUtil;
 
 @WebMvcTest(controllers = ContratoController.class)
 @ContextConfiguration(classes = {MvpGlobantApplication.class})
-public class ContratoRepositoryTest {
+public class ContratoRestControllerTest {
 	 @MockitoBean 
 	 private IClienteService clienteServiceTest;
 	 @MockitoBean 
@@ -100,7 +102,7 @@ public class ContratoRepositoryTest {
 		 when(clienteServiceTest.existeCliente(anyInt())).thenReturn(true);
 		 when(planServiceTest.existePlan(anyInt())).thenReturn(true);
 		 when(contratoServiceTest.existeClienteConContrato(anyInt())).thenReturn(true);
-		 when(contratoServiceTest.save(any(Contrato.class))).thenReturn(contrato1);
+		 when(contratoServiceTest.create(any(Contrato.class))).thenReturn(contrato1);
 		 
 		 
 		   this.mockMvc
@@ -126,7 +128,7 @@ public class ContratoRepositoryTest {
 	                .contentType(MediaType.APPLICATION_JSON)
 	                .content(TestUtil.toJson(contrato1)))
 	        .andDo(print())
-	        .andExpect(status().isNotFound());
+	        .andExpect(status().isBadRequest());
 	 }
 	 
 	 @Test
@@ -176,6 +178,30 @@ public class ContratoRepositoryTest {
 					 .contentType(MediaType.APPLICATION_JSON))
 		 	.andDo(print())
 		 	.andExpect(status().isNotFound());
+	 }
+
+//	 
+	 @Test
+	  void shouldRemoved() throws Exception {
+	    doNothing().when(contratoServiceTest).deleteContrato(anyInt());
+	    when(contratoServiceTest.existeContrato(anyInt())).thenReturn(true);
+	    
+	    this.mockMvc
+	        .perform(
+	        		delete("/api/v1/deleteContrato/{id}", 1))
+	        .andDo(print())
+	        .andExpect(status().isNoContent());
+	  }
+	 @Test
+	  void shouldReturnNotFoundInDeleteContrato() throws Exception {
+		    when(contratoServiceTest.existeContrato(anyInt())).thenReturn(false);
+		    doNothing().when(contratoServiceTest).deleteContrato(anyInt());
+
+		    this.mockMvc
+	        .perform(
+	        		delete("/api/v1/deleteContrato/{id}", 1))
+	        .andDo(print())
+	        .andExpect(status().isNotFound());
 	 }
 
 

@@ -7,8 +7,10 @@ import cl.aacp9.model.Contrato;
 public interface IContratoService {
 	
 	public List<Contrato> findAll();
-	public Contrato save(Contrato contrato);
+	public Contrato create(Contrato contrato);
 	public List<Contrato> listaContratoByIdCliente(Integer id);
 	public Boolean existeClienteConContrato (Integer id);
+	public void deleteContrato(Integer id);
+	public Boolean existeContrato(Integer id);
 
 }

@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 
 import cl.aacp9.exception.ApiException;
 import cl.aacp9.model.Plan;
+import cl.aacp9.repository.IContratoRepository;
 import cl.aacp9.repository.IPlanRepository;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j //para uso del log
@@ -16,6 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 public class PlanServiceImpl implements IPlanService {
 	@Autowired
 	private IPlanRepository planRepository; 
+	@Autowired
+	private IContratoRepository contratoRepository;
 	
 	public List<Plan> findAll(){
 		try {
@@ -47,5 +51,32 @@ public class PlanServiceImpl implements IPlanService {
 			log.error("Error en existePlan"+e.getMessage());
 			throw new ApiException("error comprobar existencia de plan",HttpStatus.BAD_REQUEST);
 		}
+	}
+
+	@Override
+	@Transactional
+	public Plan create(Plan plan) {
+		try {
+			return planRepository.save(plan);
+		} catch (Exception e) {
+			log.error("Error en create: "+e.getMessage());
+			throw new ApiException("error al isertar datos",HttpStatus.BAD_REQUEST);
+		}	
+	}
+
+	@Override
+	public void deletePlan(Integer id) {
+		try {
+			Boolean exist = contratoRepository.existByPlanId(id);
+			
+			if(exist != null && exist) {
+				contratoRepository.deleteContratoByIdPlan(id);
+			}
+			planRepository.deleteById(id);
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			throw new ApiException("Empty", HttpStatus.NOT_FOUND);
+		}
+		
 	}
 }

@@ -9,4 +9,6 @@ public interface IPlanService {
 	public List<Plan> findAll();
 	public Plan disablePlan(Integer id, Plan planActualizado);
 	public Boolean existePlan(Integer id);
+	public Plan create(Plan plan);
+	public void deletePlan(Integer id);
 }

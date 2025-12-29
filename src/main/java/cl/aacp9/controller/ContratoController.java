@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,15 +41,16 @@ public class ContratoController {
 
 	@PostMapping("/saveContrato")
 	public ResponseEntity<Contrato> saveContrato(@RequestBody Contrato contrato){
-		if(clienteService.existeCliente(contrato.getCliente().getId()) && planService.existePlan(contrato.getPlan().getId())) {
-			if (contratoService.existeClienteConContrato(contrato.getCliente().getId())){
-				//aplicar descuento de 5% al plan elejido
-				contrato.setDescuento(5);
-			}
-			contratoService.save(contrato);
-			return new ResponseEntity<>(contrato,HttpStatus.CREATED);
+		if (contratoService.existeClienteConContrato(contrato.getCliente().getId())){
+			//aplicar descuento de 5% al plan elejido
+			contrato.setDescuento(5);
 		}
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		Contrato resultado=contratoService.create(contrato);
+		if (resultado!=null) {
+			return new ResponseEntity<>(contrato,HttpStatus.CREATED);
+		}else {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
 	}
 	
 	@GetMapping("/contratosByIdCliente/{id}")
@@ -61,7 +63,14 @@ public class ContratoController {
 		}
 	}
 	
-
+	@DeleteMapping("deleteContrato/{id}")
+	public ResponseEntity<Void> deleteContrato(@PathVariable Integer id){
+		if(!contratoService.existeContrato(id)) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		contratoService.deleteContrato(id);
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	}
 	
 	
 }

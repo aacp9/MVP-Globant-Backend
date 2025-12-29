@@ -1,9 +1,12 @@
-package cl.aacp9.repository;
+package cl.aacp9.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -26,11 +29,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import cl.aacp9.MvpGlobantApplication;
 import cl.aacp9.controller.ClienteController;
 import cl.aacp9.model.Cliente;
+import cl.aacp9.model.Contrato;
 import cl.aacp9.service.IClienteService;
 import cl.aacp9.util.TestUtil;
 @WebMvcTest(controllers = ClienteController.class)
 @ContextConfiguration(classes = {MvpGlobantApplication.class})
-public class ClienteRepositoryTest {
+public class ClienteRestControllerTest {
 	 @MockitoBean 
 	 private IClienteService clienteServiceTest;
 	 
@@ -108,5 +112,57 @@ public class ClienteRepositoryTest {
         .andExpect(jsonPath("$.id").value(1));
 	 }
 
+	 @Test
+	  void shouldRegisterANewCliente() throws Exception {
+			Cliente cliente =
+					TestUtil.loadObjectFromResource(
+							"clients/response/client_entity.json", Cliente.class);
+
+			 when(clienteServiceTest.create(any(Cliente.class))).thenReturn(cliente);
+
+			
+			this.mockMvc
+	        .perform(
+	            post("/api/v1/saveCliente")
+	                .contentType(MediaType.APPLICATION_JSON)
+	                .content(TestUtil.toJson(cliente)))
+	        .andDo(print())
+	        .andExpect(status().isCreated());
+		 
+	 }
 	 
+	 @Test
+	  void shouldReturnThowInSaveCliente() throws Exception {
+			   this.mockMvc
+		        .perform(
+		            post("/api/v1/saveCliente")
+		                .contentType(MediaType.APPLICATION_JSON)
+		                .content(TestUtil.toJson(null)))
+		        .andDo(print())
+		        .andExpect(status().isBadRequest());
+	 }
+	 
+	 @Test
+	  void shouldRemoved() throws Exception {
+	    doNothing().when(clienteServiceTest).deleteCliente(anyInt());
+	    when(clienteServiceTest.existeCliente(anyInt())).thenReturn(true);
+	    
+	    this.mockMvc
+	        .perform(
+	        		delete("/api/v1/deleteCliente/{id}", 1))
+	        .andDo(print())
+	        .andExpect(status().isNoContent());
+	  }
+	 @Test
+	  void shouldReturnNotFoundInDeleteCliente() throws Exception {
+		    when(clienteServiceTest.existeCliente(anyInt())).thenReturn(false);
+		    doNothing().when(clienteServiceTest).deleteCliente(anyInt());
+
+		    this.mockMvc
+	        .perform(
+	        		delete("/api/v1/deleteCliente/{id}", 1))
+	        .andDo(print())
+	        .andExpect(status().isNotFound());
+	 }
+
 }

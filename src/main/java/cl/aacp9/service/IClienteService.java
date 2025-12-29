@@ -9,4 +9,6 @@ public interface IClienteService {
 	public List<Cliente> findAll();
 	public Cliente disableClient(Integer id, Cliente clienteActualizado);
 	public Boolean existeCliente(Integer id);
+	public Cliente create(Cliente cliente);
+	public void deleteCliente(Integer id);
 }

@@ -1,9 +1,12 @@
-package cl.aacp9.repository;
+package cl.aacp9.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -23,13 +26,14 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import cl.aacp9.MvpGlobantApplication;
 import cl.aacp9.controller.PlanController;
+import cl.aacp9.model.Cliente;
 import cl.aacp9.model.Plan;
 import cl.aacp9.service.IPlanService;
 import cl.aacp9.util.TestUtil;
 
 @WebMvcTest(controllers = PlanController.class)
 @ContextConfiguration(classes = {MvpGlobantApplication.class})
-public class PlanRespositoryTest {
+public class PlanRestControllerTest {
 	 @MockitoBean 
 	 private IPlanService planServiceTest;
 	 
@@ -66,7 +70,7 @@ public class PlanRespositoryTest {
 	 }
 
 	 @Test
-	  void shouldReturnClienteResponse() throws Exception {
+	  void shouldReturnPlanResponse() throws Exception {
 		 Plan planResponse = new Plan();
 		 planResponse.setId(1);
 		 planResponse.setNombre("planName");
@@ -94,5 +98,61 @@ public class PlanRespositoryTest {
 	        .andExpect(jsonPath("$.id").value(1));
 
 	 }
+	 
+	 //
+	 
+	 @Test
+	  void shouldRegisterANewPlan() throws Exception {
+			Plan plan =
+					TestUtil.loadObjectFromResource(
+							"plans/response/plan_entity.json", Plan.class);
+
+			 when(planServiceTest.create(any(Plan.class))).thenReturn(plan);
+
+			
+			this.mockMvc
+	        .perform(
+	            post("/api/v1/savePlan")
+	                .contentType(MediaType.APPLICATION_JSON)
+	                .content(TestUtil.toJson(plan)))
+	        .andDo(print())
+	        .andExpect(status().isCreated());
+		 
+	 }
+	 
+	 @Test
+	  void shouldReturnThowInSavePlan() throws Exception {
+			   this.mockMvc
+		        .perform(
+		            post("/api/v1/savePlan")
+		                .contentType(MediaType.APPLICATION_JSON)
+		                .content(TestUtil.toJson(null)))
+		        .andDo(print())
+		        .andExpect(status().isBadRequest());
+	 }
+	 
+	 @Test
+	  void shouldRemoved() throws Exception {
+	    doNothing().when(planServiceTest).deletePlan(anyInt());
+	    when(planServiceTest.existePlan(anyInt())).thenReturn(true);
+	    
+	    this.mockMvc
+	        .perform(
+	        		delete("/api/v1/deletePlan/{id}", 1))
+	        .andDo(print())
+	        .andExpect(status().isNoContent());
+	  }
+	 @Test
+	  void shouldReturnNotFoundInDeleteCliente() throws Exception {
+		    when(planServiceTest.existePlan(anyInt())).thenReturn(false);
+		    doNothing().when(planServiceTest).deletePlan(anyInt());
+
+		    this.mockMvc
+	        .perform(
+	        		delete("/api/v1/deletePlan/{id}", 1))
+	        .andDo(print())
+	        .andExpect(status().isNotFound());
+	 }
+
 
 }

@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -22,8 +23,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
+import cl.aacp9.exception.ApiException;
 import cl.aacp9.model.Cliente;
+import cl.aacp9.model.Contrato;
 import cl.aacp9.repository.IClienteRepository;
+import cl.aacp9.repository.IContratoRepository;
 import cl.aacp9.util.TestUtil;
 
 @ExtendWith(MockitoExtension.class)
@@ -36,6 +40,9 @@ class ClienteServiceTest {
 	//simula objeto 
 	@Mock 
 	private IClienteRepository clienteRepositoryTest;
+
+	@Mock 
+	private IContratoRepository contratoRepositoryTest;
 
 	//happyPathTest
 	@Test
@@ -113,7 +120,7 @@ class ClienteServiceTest {
 		assert resultado.equals(clienteUpdated);
 	}
 	
-	//FalsePathTes
+	//FalsePathTest
 	@Test
 	void shouldReturnRunTimeException() throws IOException {
 		Cliente cliente = new Cliente();
@@ -124,4 +131,46 @@ class ClienteServiceTest {
 	            clienteServiceTest.disableClient(anyInt(), cliente);
 	        }, "La excepción 'Cliente no encontrado con el ID: ' debe ser lanzada.");	
     }
+	
+	@Test
+	void shouldRegisterCliente() throws IOException{
+		Cliente cliente =
+				TestUtil.loadObjectFromResource(
+						"clients/response/client_entity.json", Cliente.class);
+		when(clienteRepositoryTest.save(any(Cliente.class))).thenReturn(cliente);
+		
+		//testing method
+		clienteServiceTest.create(cliente);
+		verify(clienteRepositoryTest, times(1)).save(any(Cliente.class));
+	}
+	
+	@Test
+	void shouldReturnThowInSave() throws IOException{
+		Cliente cliente =
+				TestUtil.loadObjectFromResource(
+						"clients/response/client_entity.json", Cliente.class);
+		when(clienteRepositoryTest.save(any(Cliente.class))).thenThrow(new IllegalArgumentException("test"));
+		
+		//testing method
+		assertThrows(Exception.class, ()->clienteServiceTest.create(cliente));
+		verify(clienteRepositoryTest, times(1)).save(any(Cliente.class));
+	}
+	
+	@Test
+	void shouldDeletedCliente() {
+		when(contratoRepositoryTest.existByClienteId(anyInt())).thenReturn(true);
+		doNothing().when(contratoRepositoryTest).deleteContratoByIdCliente(anyInt()); //cuando el repositorio no retorna nada
+		doNothing().when(clienteRepositoryTest).deleteById(anyInt()); //cuando el repositorio no retorna nada
+		
+		clienteServiceTest.deleteCliente(anyInt());
+		verify(clienteRepositoryTest, times(1)).deleteById(anyInt());
+	}
+	
+	@Test
+	void shouldReturnThrowInDeletedCliente() {
+		when(contratoRepositoryTest.existByClienteId(anyInt())).thenThrow(new RuntimeException("test"));
+		
+		assertThrows(ApiException.class, () -> clienteServiceTest.deleteCliente(1));
+	}
+
 }

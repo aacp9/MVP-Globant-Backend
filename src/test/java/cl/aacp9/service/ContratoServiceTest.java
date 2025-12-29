@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -22,8 +23,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
+import cl.aacp9.exception.ApiException;
 import cl.aacp9.model.Contrato;
+import cl.aacp9.repository.IClienteRepository;
 import cl.aacp9.repository.IContratoRepository;
+import cl.aacp9.repository.IPlanRepository;
 import cl.aacp9.util.TestUtil;
 
 @ExtendWith(MockitoExtension.class)
@@ -36,7 +40,10 @@ public class ContratoServiceTest {
 	//simula objeto 
 	@Mock 
 	private IContratoRepository contratoRepositoryTest;
-
+	@Mock
+	private IClienteRepository clienteRepositoryTest;
+	@Mock
+	private IPlanRepository planRepositoryTest;
 
 
 	@Test
@@ -68,10 +75,17 @@ public class ContratoServiceTest {
 		Contrato contrato = 
 				TestUtil.loadObjectFromResource(
 						"contracts/response/contracts_entity.json", Contrato.class);
+
+		when(clienteRepositoryTest.existsById(anyInt())).thenReturn(true);
+		when(planRepositoryTest.existsById(anyInt())).thenReturn(true);
+		when(clienteRepositoryTest.enabledClienteById(anyInt())).thenReturn(true);
+		when(planRepositoryTest.enabledPlanById(anyInt())).thenReturn(true);
+
 		when(contratoRepositoryTest.save(any(Contrato.class))).thenReturn(contrato);
+
 		
 		//testing method
-		contratoServiceTest.save(contrato);
+		contratoServiceTest.create(contrato);
 		verify(contratoRepositoryTest, times(1)).save(any(Contrato.class));
 	}
 	
@@ -82,9 +96,15 @@ public class ContratoServiceTest {
 						"contracts/request/contracts_register.json", Contrato.class);
 		
 		when (contratoRepositoryTest.save(any(Contrato.class))).thenThrow(new IllegalArgumentException("test"));
+
+		when(clienteRepositoryTest.existsById(anyInt())).thenReturn(true);
+		when(planRepositoryTest.existsById(anyInt())).thenReturn(true);
+		when(clienteRepositoryTest.enabledClienteById(anyInt())).thenReturn(true);
+		when(planRepositoryTest.enabledPlanById(anyInt())).thenReturn(true);
+
 		//testing method
 		
-		assertThrows(Exception.class, ()->contratoServiceTest.save(contrato));
+		assertThrows(Exception.class, ()->contratoServiceTest.create(contrato));
 		verify(contratoRepositoryTest, times(1)).save(any(Contrato.class));
 	}
 	
@@ -127,9 +147,6 @@ public class ContratoServiceTest {
 	
 	@Test
 	void shouldReturnFalse() {
-//		List<Contrato> contratos = 
-//				TestUtil.loadObjectFromResource(
-//						"contracts/response/contracts_list_by_client_id.json", new TypeReference<List<Contrato>>() {});
 
 		when(contratoRepositoryTest.findByIdCliente(anyInt())).thenReturn(Collections.emptyList());
 		assertFalse(contratoServiceTest.existeClienteConContrato(anyInt()));
@@ -139,7 +156,6 @@ public class ContratoServiceTest {
 		
 	}
 
-	
 	@Test
 	void shouldReturnThrowsInFindByIdCliente() {
 	when(contratoRepositoryTest.findByIdCliente(anyInt())).thenThrow(new RuntimeException("test"));
@@ -148,5 +164,49 @@ public class ContratoServiceTest {
 	
 	verify(contratoRepositoryTest, times(1)).findByIdCliente(anyInt());
 	}
+
+	@Test
+	void shouldDeletedContrato() {
+		when(contratoRepositoryTest.existsById(anyInt())).thenReturn(true);
+		doNothing().when(contratoRepositoryTest).deleteById(anyInt()); //cuando el repositorio no retorna nada
+		
+		contratoServiceTest.deleteContrato(anyInt());
+		verify(contratoRepositoryTest, times(1)).deleteById(anyInt());
+	}
+	
+	@Test
+	void shouldReturnThrowInDeletedContrato() {
+		when(contratoRepositoryTest.existsById(anyInt())).thenThrow(new RuntimeException("test"));
+		
+		assertThrows(ApiException.class, () -> contratoServiceTest.deleteContrato(1));
+	}
+
+	@Test
+	void ShouldReturnTrue() {
+		//
+		when (contratoRepositoryTest.existsById(anyInt())).thenReturn(true);
+		assertTrue(contratoServiceTest.existeContrato(anyInt()));
+
+		//se verifica la ejecucion del metodo del repositorio(mock)
+		verify(contratoRepositoryTest, times(1)).existsById(anyInt());
+	}
+
+	//FalsePathTest
+	@Test
+	void shouldReturnFalseInExisteContrato() {
+		when (contratoRepositoryTest.existsById(anyInt())).thenReturn(false);
+		assertFalse(contratoServiceTest.existeContrato(anyInt()));
+		
+		verify(contratoRepositoryTest, times(1)).existsById(anyInt());
+	}
+
+	//FalsePathTest
+	@Test
+	void shouldReturnThrowInExisteContrato() {
+		when (contratoRepositoryTest.existsById(anyInt())).thenThrow(new RuntimeException("test"));
+		assertThrows(Exception.class, ()->contratoServiceTest.existeContrato(anyInt()));
+		verify(contratoRepositoryTest, times(1)).existsById(anyInt());		
+	}
+
 	
 }
