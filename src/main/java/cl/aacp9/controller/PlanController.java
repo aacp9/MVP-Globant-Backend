@@ -18,13 +18,13 @@ import cl.aacp9.model.Plan;
 import cl.aacp9.service.IPlanService;
 
 @RestController
-@RequestMapping("api/v1")
+@RequestMapping("api/v1/plan")
 public class PlanController {
 	
 	@Autowired
 	public IPlanService planService;
 	
-	@GetMapping("/planes")
+	@GetMapping("user/planes")
 	public ResponseEntity<List<Plan>> findAll(){
 			List<Plan> listaPlanes = planService.findAll();
 			if(!listaPlanes.isEmpty()) {
@@ -34,18 +34,18 @@ public class PlanController {
 			}
 	}
 
-	@PutMapping("/disablePlan/{id}")
+	@PutMapping("user/disablePlan/{id}")
 	public ResponseEntity<Plan> disablePlan(@PathVariable Integer id, @RequestBody Plan planActualizado){
 			Plan plan = planService.disablePlan(id, planActualizado);
 			return new ResponseEntity<>(plan,HttpStatus.OK);
 	}
 	
-	@PostMapping("/savePlan")
+	@PostMapping("admin/savePlan")
 	public ResponseEntity<Plan> registrarPlan(@RequestBody Plan plan){
 		return new ResponseEntity<>(planService.create(plan), HttpStatus.CREATED);
 	}
 	
-	@DeleteMapping("deletePlan/{id}")
+	@DeleteMapping("admin/deletePlan/{id}")
 	public ResponseEntity<Void> deleteCliente(@PathVariable Integer id){
 		if(!planService.existePlan(id)) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);

@@ -1,4 +1,4 @@
-package cl.aacp9.DTO;
+package cl.aacp9.dto;
 import java.util.List;
 
 import cl.aacp9.model.Contrato;

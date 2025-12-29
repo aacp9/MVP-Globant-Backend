@@ -19,7 +19,7 @@ import cl.aacp9.service.IContratoService;
 import cl.aacp9.service.IPlanService;
 
 @RestController
-@RequestMapping("api/v1")
+@RequestMapping("api/v1/contrato")
 public class ContratoController {
 
 	@Autowired
@@ -29,7 +29,7 @@ public class ContratoController {
 	@Autowired
 	public IPlanService planService;
 	
-	@GetMapping("/contratos")
+	@GetMapping("user/contratos")
 	public ResponseEntity<List<Contrato>> findAll(){
 		List<Contrato> listaContratos= contratoService.findAll();
 		if(!listaContratos.isEmpty()) {
@@ -39,7 +39,17 @@ public class ContratoController {
 		}
 	}
 
-	@PostMapping("/saveContrato")
+	@GetMapping("user/contratosByIdCliente/{id}")
+	public ResponseEntity<List<Contrato>> findAllByCliente(@PathVariable Integer id){
+		List<Contrato> listaContratosByIdCliente=contratoService.listaContratoByIdCliente(id);  
+		if(!listaContratosByIdCliente.isEmpty()) {
+				return new ResponseEntity<>(listaContratosByIdCliente,HttpStatus.OK);
+		}else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
+
+	@PostMapping("user/saveContrato")
 	public ResponseEntity<Contrato> saveContrato(@RequestBody Contrato contrato){
 		if (contratoService.existeClienteConContrato(contrato.getCliente().getId())){
 			//aplicar descuento de 5% al plan elejido
@@ -53,17 +63,7 @@ public class ContratoController {
 		}
 	}
 	
-	@GetMapping("/contratosByIdCliente/{id}")
-	public ResponseEntity<List<Contrato>> findAllByCliente(@PathVariable Integer id){
-		List<Contrato> listaContratosByIdCliente=contratoService.listaContratoByIdCliente(id);  
-		if(!listaContratosByIdCliente.isEmpty()) {
-				return new ResponseEntity<>(listaContratosByIdCliente,HttpStatus.OK);
-		}else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
-	}
-	
-	@DeleteMapping("deleteContrato/{id}")
+	@DeleteMapping("admin/deleteContrato/{id}")
 	public ResponseEntity<Void> deleteContrato(@PathVariable Integer id){
 		if(!contratoService.existeContrato(id)) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);

@@ -18,7 +18,7 @@ import cl.aacp9.model.Cliente;
 import cl.aacp9.service.IClienteService;
 
 @RestController
-@RequestMapping("api/v1")
+@RequestMapping("api/v1/cliente")
 public class ClienteController {
 	
 	//private static final org.slf4j.Logger Logger = LoggerFactory.getLogger(ClienteController.class);
@@ -26,7 +26,7 @@ public class ClienteController {
 	@Autowired
 	public IClienteService clienteService;
 
-	@GetMapping("/clientes")
+	@GetMapping("user/clientes")
 	public ResponseEntity<List<Cliente>> findAll(){
 			List<Cliente> listaClientes = clienteService.findAll();
 			if(!listaClientes.isEmpty()) {
@@ -36,18 +36,18 @@ public class ClienteController {
 			}
 	}
 
-	@PutMapping("/disableClient/{id}")
+	@PutMapping("user/disableClient/{id}")
 	public ResponseEntity<Cliente> disableClient(@PathVariable Integer id, @RequestBody Cliente clienteActualizado){
 			Cliente cliente=clienteService.disableClient(id, clienteActualizado);
 			return new ResponseEntity<>(cliente,HttpStatus.OK);
 	}
 	
-	@PostMapping("/saveCliente")
+	@PostMapping("user/saveCliente")
 	public ResponseEntity<Cliente> registrarCliente(@RequestBody Cliente cliente ){
 		return new ResponseEntity<>(clienteService.create(cliente),HttpStatus.CREATED);
 	}
 	
-	@DeleteMapping("deleteCliente/{id}")
+	@DeleteMapping("admin/deleteCliente/{id}")
 	public ResponseEntity<Void> deleteCliente(@PathVariable Integer id){
 		if(!clienteService.existeCliente(id)) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
