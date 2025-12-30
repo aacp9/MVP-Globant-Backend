@@ -123,6 +123,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         auth-> auth
+                        		.requestMatchers("/h2-console/**").permitAll()
                                 .requestMatchers("/api/v1/auth/login").permitAll()
                                 .requestMatchers("/api/v1/cliente/user/**").hasRole("USER")
                                 .requestMatchers("/api/v1/cliente/admin/**").hasRole("ADMIN")
@@ -131,13 +132,19 @@ public class SecurityConfig {
                                 .requestMatchers("/api/v1/contrato/user/**").hasRole("USER")
                                 .requestMatchers("/api/v1/contrato/admin/**").hasRole("ADMIN")
                                 .anyRequest().authenticated()
-                ).oauth2ResourceServer(
+                )
+                .oauth2ResourceServer(
                         rs -> rs.jwt(Customizer.withDefaults())
-                ).sessionManagement(
+                )
+                .sessionManagement(
                         session -> session
                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                .build();
+                .headers(headers -> headers
+                        .frameOptions(frameOptions -> frameOptions.sameOrigin()) // Permite el Same Origin para H2
+                    )
+                .build()
+                ;
     }
 
 }
