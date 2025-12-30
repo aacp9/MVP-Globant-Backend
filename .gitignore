@@ -33,4 +33,4 @@ build/
 .vscode/
 
 ### public private cert ###
-.pem
+!**/src/main/resource/certs/.pem
